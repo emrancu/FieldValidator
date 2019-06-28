@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>validator</title>
+  
+  
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootswatch/4.3.1/cerulean/bootstrap.min.css'>
+
+  <style>
+  
+  label>xmp {
+        color: #2c21da;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+</style>
+  
+</head>
+
+<body style="padding-top:100px">
+
+<div class="container">
+   
+
+<form id="needsValidation" novalidate>
+  <div class="form-row">
+    <div class="col-md-4 mb-3">
+      <label > Only Letter A-Z & a-z  <xmp> <input data-validate="letter" /></xmp></label>
+      <input type="text" class="form-control"  data-validate="letter"   required>
+      <div class="invalid-feedback">
+        Must be Letter A-Z & a-z 
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label > All Character without Number <xmp> <input  data-validate="noNumber"/></xmp></label>
+      <input type="text" class="form-control"  data-validate="noNumber"   required>
+      <div class="invalid-feedback">
+        Must be All Character without Number
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label > All Character without Special Character <xmp> <input  data-validate="noSpecialChar"/></xmp></label>
+      <input type="text" class="form-control"  data-validate="noSpecialChar"   required>
+      <div class="invalid-feedback">
+        Must be All Character without Special Character 
+      </div>
+    </div>
+	
+    <div class="col-md-4 mb-3">
+      <label > Only Number <xmp> <input  data-validate="number"/></xmp></label>
+      <input type="text" class="form-control"  data-validate="number"   required>
+      <div class="invalid-feedback">
+        Must be Only Number
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label > Only FLoat Number <xmp> <input  data-validate="floatNumber"/></xmp></label>
+      <input type="text" class="form-control"  data-validate="floatNumber"   required>
+      <div class="invalid-feedback">
+        Must be Only Number
+      </div>
+    </div>
+	
+    <div class="col-md-4 mb-3">
+      <label >  limit length to 0-5  <xmp> <input  data-validate="limit:0,5"/></xmp></label>
+      <input type="text" class="form-control"  data-validate="limit:0,5"   required>
+      <div class="invalid-feedback">
+       limit length to 0-5 
+      </div>
+    </div>
+	
+    <div class="col-md-4 mb-3">
+      <label >  Mobile No start with 0 and length 11 <xmp> <input  data-validate="mobile|limit:11,11"/></xmp></label>
+      <input type="text" class="form-control"  data-validate="mobile|limit:11,11"   required>
+      <div class="invalid-feedback">
+       limit length to 0-5 
+      </div>
+    </div>
+	 
+	
+    <div class="col-md-4 mb-3">
+      <label for="validationCustom02"> Only Required </label>
+      <input type="text" class="form-control"   required>
+      <div class="invalid-feedback">
+			Required
+      </div>
+    </div>
+    
+  </div>  
+  <button class="btn btn-primary" type="submit">Submit form</button>
+</form>
+
+</div>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js'></script>
+
+  
+
+    <script  src="./validator.js"></script>
+
+
+
+
+</body>
+
+</html>
