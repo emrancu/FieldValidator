@@ -1,17 +1,16 @@
-
 /*Author :AL EMRAN
 email:emrancu1@gmail.com
 website:http://alemran.me
+project: https://github.com/emrancu/FieldValidator
 */
 
 
 const fieldValidator = {
-
     selectedForm: '',
     checkRequired: function () {
         let self = this;
         let status = true;
-        $(this.selectedForm).find('input[required]').each(function () {
+        $(this.selectedForm).find('input[required],input[data-validate]').each(function () {
             let fieldValue = $(this).val();
             // check if value is null
             if (!fieldValue) {
@@ -23,16 +22,20 @@ const fieldValidator = {
             } else {
                 let CheckableValue = $(this).attr('data-validate');
                 // check if value checker is enabled
-                if (CheckableValue) {
-                    let check = self.validateFieldData({rules: CheckableValue, val: fieldValue});
+                if (typeof CheckableValue !== typeof undefined && CheckableValue !== false) {
+
+                    let check = self.wayToValidator({rules: CheckableValue, val: fieldValue});
                     if (!check) {
                         $(this).addClass('is-invalid');
-                        // add onkeyup event to field for live checking
-                        self.createLiveEvent(this)
+                        if (!self.valueChecker) { // check  it value live checker already enabled or not
+                            // add onkeyup event to field for live checking
+                            self.createLiveEvent(this)
+                        }
                         status = false;
                     } else {
                         $(this).addClass('is-valid');
                     }
+
                 } else {
                     $(this).addClass('is-valid');
                 }
@@ -40,7 +43,7 @@ const fieldValidator = {
         })
         return status;
     },
-    validateFieldData: function (option) {
+    wayToValidator: function (option) {
         let status = true;
         let self = this;
 
@@ -92,44 +95,69 @@ const fieldValidator = {
                 (/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/.test(option.data) ? valueStatus = false : valueStatus = true)
                 break;
             case 'limit':
-                if (eval('/^.{' + option.limit + '}$/').test(option.data)) valueStatus = true;
-                break;
-            case 'email':
-                if (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(option.data)) valueStatus = true;
-                break;
 
+                if (eval('/^.{' + option.limit + '}$/').test(option.data)) valueStatus = true;
 
         }
         return valueStatus;
     },
     createLiveEvent: function (field) {
-
         let self = this;
-
         $(field).keyup(function (e) {
-
+            let isRequired = $(this).attr('required');
+            let isValidator = $(this).attr('data-validate');
             let fielsValue = $(this).val();
-            if (fielsValue) {
 
-                let validator = $(this).attr('data-validate');
-                if (validator) {
-                    let check = self.validateFieldData({rules: validator, val: this.value});
-                    if (!check) {
-                        $(this).removeClass('is-valid').addClass('is-invalid')
+            if (typeof isRequired !== typeof undefined && isRequired !== false) {
 
+                if (fielsValue) {
+
+                    if (typeof isValidator !== typeof undefined && isValidator !== false) {
+                        self.valueCheckForLiveEvent(this, isValidator, fielsValue)
                     } else {
-
-                        $(this).removeClass('is-invalid').addClass('is-valid');
+                        $(this).removeClass('is-valid').addClass('is-invalid');
                     }
-                } else {
-                    $(this).removeClass('is-invalid').addClass('is-valid');
-                }
 
+                } else {
+                    $(this).removeClass('is-valid').addClass('is-invalid');
+                }
             } else {
-                $(this).removeClass('is-valid').addClass('is-invalid');
+
+                if (fielsValue) {
+                    if (typeof isValidator !== typeof undefined && isValidator !== false) {
+                        self.valueCheckForLiveEvent(this, isValidator, fielsValue);
+
+                    }
+
+                } else {
+                    $(this).removeClass('is-invalid'); //.addClass('is-valid');
+                }
             }
 
+
         })
+    },
+    valueCheckForLiveEvent: function (field, validator, val) {
+
+        let check = this.wayToValidator({rules: validator, val: val});
+        if (!check) {
+
+            $(field).removeClass('is-valid').addClass('is-invalid')
+
+        } else {
+
+            $(field).removeClass('is-invalid').addClass('is-valid');
+        }
+    },
+    valueChecker: false,
+    initValueChecker: function (form) {
+        this.selectedForm = form;
+        this.valueChecker = true;
+        let self = this;
+        $(this.selectedForm).find('input[data-validate]').each(function (e) {
+            self.createLiveEvent(this);
+        })
+
     },
     check: function (form) {
         this.selectedForm = form;
@@ -138,8 +166,3 @@ const fieldValidator = {
 
 }
 
-
-$(needsValidation).submit(function (e) {
-    e.preventDefault();
-    console.log(fieldValidator.check(needsValidation));
-})
